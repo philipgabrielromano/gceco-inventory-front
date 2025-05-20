@@ -12,5 +12,5 @@
     "start": "react-scripts start",
     "build": "react-scripts build"
   },
-  "proxy": "https://inventory-api.onrender.com"
+  "proxy": "http://localhost:3001"
 }
