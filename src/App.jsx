@@ -15,7 +15,10 @@ function App() {
     setLoading(true);
     try {
       const res = await axios.get(`${API_BASE}/api/report?dateFrom=${dateFrom}&dateTo=${dateTo}`);
-      const filtered = res.data.filter(item => item.description?.toLowerCase().includes('new'));
+      const filtered = res.data.filter(item => {
+        const category = item.category?.toLowerCase() || '';
+        return category.includes('new') || category.includes('ng');
+      });
       setData(filtered);
     } catch (err) {
       console.error(err);
