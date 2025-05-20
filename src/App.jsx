@@ -4,22 +4,27 @@ import axios from 'axios';
 
 function App() {
   const [data, setData] = useState([]);
+  const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState({});
   const [dateFrom, setDateFrom] = useState('2025-05-01');
   const [dateTo, setDateTo] = useState('2025-05-20');
+  const [showLogs, setShowLogs] = useState(false);
 
   const API_BASE = 'https://gceco-inventory-back.onrender.com';
 
   const fetchReport = async () => {
     setLoading(true);
+    setLogs([]);
     try {
       const res = await axios.get(`${API_BASE}/api/report?dateFrom=${dateFrom}&dateTo=${dateTo}`);
-      const filtered = res.data.filter(item => {
+      const response = res.data;
+      const filtered = response.data.filter(item => {
         const category = item.category?.toLowerCase() || '';
         return category.includes('new') || category.includes('ng');
       });
       setData(filtered);
+      setLogs(response.logs || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -47,7 +52,18 @@ function App() {
         <button onClick={fetchReport} className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
           Run
         </button>
+        <button onClick={() => setShowLogs(!showLogs)} className="mt-6 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+          {showLogs ? 'Hide Logs' : 'Show Logs'}
+        </button>
       </div>
+
+      {showLogs && (
+        <div className="mb-4 max-h-60 overflow-y-auto border rounded p-3 bg-gray-50 text-sm font-mono whitespace-pre-wrap">
+          {logs.map((log, index) => (
+            <div key={index}>{log}</div>
+          ))}
+        </div>
+      )}
 
       {loading ? (
         <div>Loading report...</div>
