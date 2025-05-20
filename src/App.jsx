@@ -9,10 +9,12 @@ function App() {
   const [dateFrom, setDateFrom] = useState('2025-05-01');
   const [dateTo, setDateTo] = useState('2025-05-20');
 
+  const API_BASE = 'https://gceco-inventory-back.onrender.com';
+
   const fetchReport = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`/api/report?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+      const res = await axios.get(`${API_BASE}/api/report?dateFrom=${dateFrom}&dateTo=${dateTo}`);
       setData(res.data);
     } catch (err) {
       console.error(err);
