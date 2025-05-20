@@ -18,10 +18,16 @@ function App() {
     setLogs([]);
     try {
       const res = await axios.get(`${API_BASE}/api/report?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+      console.log('📬 Full response:', res.data);
       const response = res.data;
       const filtered = response.data.filter(item => {
         const category = item.category?.toLowerCase() || '';
         return category.includes('new') || category.includes('ng');
+      }).map(item => {
+        if (item.cost === 'missing') {
+          item.cost = null;
+        }
+        return item;
       });
       setData(filtered);
       setLogs(response.logs || []);
@@ -98,7 +104,7 @@ function App() {
                     <td className="p-2">{sellThrough}</td>
                     <td className="p-2">${skuItem.totalRevenue.toFixed(2)}</td>
                     <td className="p-2">{skuItem.totalOrders}</td>
-                    <td className="p-2">${skuItem.cost?.toFixed(2) ?? 'N/A'}</td>
+                    <td className="p-2">{skuItem.cost === null ? 'Missing' : `$${skuItem.cost.toFixed(2)}`}</td>
                     <td className="p-2">
                       <button onClick={() => toggleExpand(skuItem.sku)} className="text-blue-500 hover:underline">
                         {expanded[skuItem.sku] ? 'Hide' : 'Show'}
